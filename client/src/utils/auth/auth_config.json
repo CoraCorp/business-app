@@ -1,4 +1,5 @@
 {
   "domain": "coracorp.auth0.com",
-  "clientId": "jm9HzZzkH2KMHZOy1uqbIHd4GFrCEo6V"
+  "clientId": "jm9HzZzkH2KMHZOy1uqbIHd4GFrCEo6V",
+  "audience": "http://localhost:80"
 }

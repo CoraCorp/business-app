@@ -1,11 +1,14 @@
 import React, { useRef } from 'react';
 import { Link, useHistory } from 'react-router-dom';
 import uuid from 'uuid/v4';
+import RegisteredAppService from '../services/RegisteredAppService';
+import { useAuth0 } from '../utils/auth/auth0';
 import * as routes from '../utils/routing/routes';
 
-const CreateApp = ({ onAppCreated }) => {
+const RegisterApp = () => {
   const history = useHistory();
   const formRef = useRef();
+  const { getAccessTokenSilently } = useAuth0();
 
   function handleSubmit(e) {
     e.preventDefault();
@@ -19,8 +22,16 @@ const CreateApp = ({ onAppCreated }) => {
         },
         { id: uuid() }
       );
-    onAppCreated(app);
-    history.push(routes.MANAGE_APP.replace(':id', app.id));
+
+    getAccessTokenSilently()
+      .then(accessToken =>
+        new RegisteredAppService(accessToken).registerNewApp(app)
+      )
+      .then(successful => {
+        if (successful) {
+          history.push(routes.MANAGE_APP.replace(':id', app.id));
+        }
+      });
   }
 
   function handleNameChange(e) {
@@ -48,4 +59,4 @@ const CreateApp = ({ onAppCreated }) => {
   );
 };
 
-export default CreateApp;
+export default RegisterApp;

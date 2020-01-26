@@ -1,17 +1,31 @@
-import React, { useRef } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { useHistory, useParams } from 'react-router-dom';
+import RegisteredAppService from '../services/RegisteredAppService';
+import { useAuth0 } from '../utils/auth/auth0';
 import * as routes from '../utils/routing/routes';
 
-const ManageApp = ({ apps, onAppUpdated }) => {
+const ManageApp = () => {
   const formRef = useRef();
   const { id } = useParams();
   const history = useHistory();
-  let app = apps.find(a => a.id.toLowerCase() === id.toLowerCase());
+  const { loading, getAccessTokenSilently } = useAuth0();
+  const [app, setApp] = useState();
 
-  if (!app) {
-    console.log(apps);
-    history.replace(routes.HOME);
-  }
+  useEffect(() => {
+    if (!loading) {
+      getAccessTokenSilently()
+        .then(accessToken =>
+          new RegisteredAppService(accessToken).getRegisteredApp(id)
+        )
+        .then(res => {
+          if (res) {
+            setApp(res);
+          } else {
+            history.replace(routes.HOME);
+          }
+        });
+    }
+  }, [loading, getAccessTokenSilently]);
 
   function handleNameChange(e) {
     // TODO: make sure the name is not in use
@@ -29,7 +43,17 @@ const ManageApp = ({ apps, onAppUpdated }) => {
         },
         { ...app }
       );
-    onAppUpdated(updatedApp);
+    getAccessTokenSilently()
+      .then(accessToken =>
+        new RegisteredAppService(accessToken).updateApp(updatedApp)
+      )
+      .then(res => {
+        if (res) {
+          console.log('saved');
+        } else {
+          console.log('problem');
+        }
+      });
   }
   return (
     <div>
