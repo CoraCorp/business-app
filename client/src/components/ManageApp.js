@@ -25,7 +25,7 @@ const ManageApp = () => {
           }
         });
     }
-  }, [loading, getAccessTokenSilently]);
+  }, [loading, getAccessTokenSilently, history, id]);
 
   function handleNameChange(e) {
     // TODO: make sure the name is not in use
@@ -71,11 +71,12 @@ const ManageApp = () => {
               />
             </label>
             <label>
-              Origin URL: <input name="origin" defaultValue={app.origin} />
+              Origin URL:{' '}
+              <input name="originUrl" defaultValue={app.originUrl} />
             </label>
             <label>
               Subscriber URL:{' '}
-              <input name="subscriber" defaultValue={app.subscriber} />
+              <input name="subscriberUrl" defaultValue={app.subscriberUrl} />
             </label>
             <button type="submit">Submit</button>
           </form>
