@@ -10,24 +10,24 @@ const getApp = async (req, res) => {
   if (app) {
     res.json(app);
   } else {
-    res.sendStatus('404');
+    res.sendStatus(404);
   }
 };
 
 const postApp = async (req, res) => {
   await service.createRegisteredApp(req.user.sub, req.body);
-  res.sendStatus('200');
+  res.sendStatus(200);
 };
 
 const putApp = (req, res) => {
   if (req.params.id.toLowerCase() === req.body.id.toLowerCase()) {
     if (service.updateRegisteredApp(req.user.sub, req.body)) {
-      res.sendStatus('200');
+      res.sendStatus(200);
     } else {
-      res.sendStatus('400');
+      res.sendStatus(400);
     }
   } else {
-    res.sendStatus('400');
+    res.sendStatus(400);
   }
 };
 
